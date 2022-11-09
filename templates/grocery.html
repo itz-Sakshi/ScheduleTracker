@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Grocery
+{% endblock %}
+
+{% block main %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-start">Grocery Items</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td class="text-start">{{ item.item }}
+                            <form method="post" action="/grocery.html">
+                                <div>
+                                    <input type="hidden" name="del_item" value="{{ item.item }}">
+                                    <button id="del_btn" class="btn btn-primary" type="submit" name="Del_button">Delete</button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    
+                {% else %}
+                <tr>
+                    <td class="text-start">No items to be bought</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <form action="/grocery.html" method="post" id = form>
+        <div class="mb-3">
+            <input autocomplete="off" id="add_item" name="action" placeholder="Item" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit" name="Add_button">Add New Item</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+{% block main %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="text-start">Today's To Do List</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in todays_tasks %}
+                <tr>
+                    <td class="text-start">{{ task.task }}
+                        <form action="" method="post">
+                            <div>
+                                <input type="hidden" name="task" value="{{ task.task }}">
+                                <input type="hidden" name="date" value="{{ task.date }}">
+                                <button id="del_btn" class="btn btn-primary" type="submit" name="DelTask_button">Done</button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+            <tr>
+                <td class="text-start">{{ if_tasks_none }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="text-start">Approaching Deadlines</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for deadline in deadlines %}
+                <tr>
+                    <td class="text-start">{{ deadline.task }}<br>
+                        Date: {{ deadline.date }} 
+                        <form action="" method="post">
+                            <div>
+                                <input type="hidden" name="deadline" value="{{ deadline.task }}">
+                                <input type="hidden" name="date" value="{{ deadline.date }}">
+                                <button id="del_btn" class="btn btn-primary" type="submit" name="DelDdline_button">Done</button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+            <tr>
+                <td class="text-start">You have no deadlines in the next 10 days.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

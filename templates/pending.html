@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Pending_Tasks
+{% endblock %}
+
+{% block main %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-start">Pending Work</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                    <tr>
+                        <td class="text-start">{{ task.task }}<br>
+                            Date: {{ task.date }} 
+                            <form method="post" action="/pending.html">
+                                <div>
+                                    <input type="hidden" name="task" value="{{ task.task }}">
+                                    <input type="hidden" name="date" value="{{ task.date }}">
+                                    <button id="del_btn" class="btn btn-primary" type="submit" name="Del_button">Delete</button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    
+                {% else %}
+                <tr>
+                    <td class="text-start">No pending tasks</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+{% endblock %}

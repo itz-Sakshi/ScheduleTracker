@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Others
+{% endblock %}
+
+{% block main %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-start">Miscellaneous Tasks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in others %}
+                    <tr>
+                        <td class="text-start">{{ task.task }}<br>
+                            Date: {{ task.date }} 
+                            <form method="post" action="/others.html">
+                                <div>
+                                    <input type="hidden" name="task" value="{{ task.task }}">
+                                    <input type="hidden" name="date" value="{{ task.date }}">
+                                    <button id="del_btn" class="btn btn-primary" type="submit" name="Del_button">Delete</button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    
+                {% else %}
+                <tr>
+                    <td class="text-start">No tasks assigned</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <form action="/others.html" method="post" id = form >
+        <div class="mb-3">
+            <input autocomplete="off" id="add_item" name="task" placeholder="Task" type="text">
+            <label for="start">Date:</label>
+            <input autocomplete="off" id="add_item" name="date" type="date">
+        </div>
+        <button class="btn btn-primary" type="submit" name="Add_button">Add New Task</button>
+    </form>
+{% endblock %}

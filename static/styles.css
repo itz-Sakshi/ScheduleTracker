@@ -1,0 +1,114 @@
+
+#nav-brand
+{
+    font-size: 300%;
+    background-color: lightgoldenrodyellow;
+    text-decoration: none;
+    padding-left: 1%;
+    padding-right: 2%;
+    padding-top: 0%;
+    padding-bottom: 0%;
+    margin-top: 0%;
+    margin-bottom: 0%;
+    margin-left: 0%;
+    margin-left: 0%;
+    border-radius: 0%;
+    border-left: 0mm;
+    border-left: 0mm;
+}
+#navbar
+{
+    font-size: 180%;
+    background-color: lightgoldenrodyellow;
+    padding-left: 0%;
+    padding-right: 0%;
+    padding-top: 0%;
+    padding-bottom: 0%;
+    margin-top: 0%;
+    margin-bottom: 0%;
+    margin-left: 0%;
+    margin-left: 0%;
+    border-radius: 0%;
+    border-left: 0mm;
+    border-left: 0mm;
+    line-height: 2.5;
+    text-decoration: none;
+}
+
+#navbar1
+{
+    background-color: lightcoral;
+    padding-left: 0%;
+    padding-right: 0%;
+    padding-top: 0%;
+    padding-bottom: 0%;
+    margin-top: 0%;
+    margin-bottom: 0%;
+    margin-left: 0%;
+    margin-left: 0%;
+    border-radius: 0%;
+    border-left: 0mm;
+    border-left: 0mm;
+    line-height: 2;
+    text-decoration: none;
+}
+.container-fluid
+{
+    margin-left: 0%;
+    padding-left: 0%;
+    width: 120%;
+    padding-right: 0%;
+    text-decoration: none;
+}
+/* Colors for brand */
+.blue
+{
+    color: #537fbe;
+}
+.red
+{
+    color: #ea433b;
+}
+.yellow
+{
+    color: #f5b82e;
+}
+.green
+{
+    color: #2e944b;
+}
+#del_btn
+{
+    margin-left: 1250px
+}
+#body
+{
+    background-color: lightyellow;
+}
+footer
+{
+    font-weight: 300;
+    font-size: x-large;
+    margin-left: 15cm;
+    margin-top: 4.5cm;
+}
+.mb-3
+{
+    margin-left: 0cm;
+}
+#form
+{
+    margin-left: -7cm;
+}
+#username
+{
+    margin-left: -7cm;
+}
+#password
+{
+    margin-left: -7cm;
+}
+#button
+{
+    margin-left: -7cm;
+}
