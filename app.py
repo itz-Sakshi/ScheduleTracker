@@ -52,8 +52,7 @@ def index():
                 flash("Deleted!")
         todays_tasks = db.execute("""SELECT * FROM study WHERE date = date() AND user_id = ? UNION ALL SELECT * FROM others WHERE date = date() AND user_id = ?""", session.get("user_id"), session.get("user_id"))
         deadlines = db.execute("""SELECT * FROM deadlines WHERE user_id = ? AND date BETWEEN DATE(date(), '-0 days') AND DATE(date(), '+10 days')""", session.get("user_id"))
-        if_tasks_none = "You have no assigned tasks to do for today"
-        return render_template("index.html", todays_tasks=todays_tasks, deadlines=deadlines, if_tasks_none=if_tasks_none )
+        return render_template("index.html", todays_tasks=todays_tasks, deadlines=deadlines )
             
     else:
         return apology("No database found", 403)
@@ -83,7 +82,15 @@ def login():
         session["user_id"] = rows[0]["id"]
 
         # Redirect user to home page
-        return render_template("index.html")
+        study_table = db.execute("""SELECT name FROM sqlite_master WHERE type = ? AND name = ?""", "table", "study")
+        others_table = db.execute("""SELECT name FROM sqlite_master WHERE type = ? AND name = ?""", "table", "others")
+        deadlines_table = db.execute("""SELECT name FROM sqlite_master WHERE type = ? AND name = ?""", "table", "deadlines")
+        if (study_table != [] or deadlines_table != []) and (others_table != [] or deadlines_table != []):
+            todays_tasks = db.execute("""SELECT * FROM study WHERE date = date() AND user_id = ? UNION ALL SELECT * FROM others WHERE date = date() AND user_id = ?""", session.get("user_id"), session.get("user_id"))
+            deadlines = db.execute("""SELECT * FROM deadlines WHERE user_id = ? AND date BETWEEN DATE(date(), '-0 days') AND DATE(date(), '+10 days')""", session.get("user_id"))
+            return render_template("index.html", todays_tasks=todays_tasks, deadlines=deadlines )
+        else:
+            return apology("No database found", 403)
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
