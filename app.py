@@ -46,6 +46,7 @@ def index():
                 date = request.form.get("date")
                 if len(task) != 0  and date:
                     db.execute("""DELETE FROM study WHERE task = ? AND date = ? AND user_id = ?""", request.form.get("task"), request.form.get("date"), session.get("user_id"))
+                    db.execute("""DELETE FROM others WHERE task = ? AND date = ? AND user_id = ?""", request.form.get("task"), request.form.get("date"), session.get("user_id"))
                     flash("Deleted!")
             else:
                 db.execute("""DELETE FROM deadlines WHERE task = ? AND date = ? AND user_id = ?""", request.form.get("deadline"), request.form.get("date"), session.get("user_id"))
