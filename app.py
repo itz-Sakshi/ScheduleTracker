@@ -63,35 +63,37 @@ def login():
     """Log user in"""
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-
-        # Ensure username was submitted
-        if not request.form.get("username"):
-            return apology("Must provide username", 403)
-
-        # Ensure password was submitted
-        elif not request.form.get("password"):
-            return apology("Must provide password", 403)
-
-        # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
-
-        # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
-            return apology("Invalid username and/or password", 403)
-
-        # Remember which user has logged in
-        session["user_id"] = rows[0]["id"]
-
-        # Redirect user to home page
-        study_table = db.execute("""SELECT name FROM sqlite_master WHERE type = ? AND name = ?""", "table", "study")
-        others_table = db.execute("""SELECT name FROM sqlite_master WHERE type = ? AND name = ?""", "table", "others")
-        deadlines_table = db.execute("""SELECT name FROM sqlite_master WHERE type = ? AND name = ?""", "table", "deadlines")
-        if (study_table != [] or deadlines_table != []) and (others_table != [] or deadlines_table != []):
-            todays_tasks = db.execute("""SELECT * FROM study WHERE date = date() AND user_id = ? UNION ALL SELECT * FROM others WHERE date = date() AND user_id = ?""", session.get("user_id"), session.get("user_id"))
-            deadlines = db.execute("""SELECT * FROM deadlines WHERE user_id = ? AND date BETWEEN DATE(date(), '-0 days') AND DATE(date(), '+10 days')""", session.get("user_id"))
-            return render_template("index.html", todays_tasks=todays_tasks, deadlines=deadlines )
+        if "Register" in request.form:
+            return render_template("register.html")
         else:
-            return apology("No database found", 403)
+            # Ensure username was submitted
+            if not request.form.get("username"):
+                return apology("Must provide username", 403)
+
+            # Ensure password was submitted
+            elif not request.form.get("password"):
+                return apology("Must provide password", 403)
+
+            # Query database for username
+            rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+
+            # Ensure username exists and password is correct
+            if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
+                return apology("Invalid username and/or password", 403)
+
+            # Remember which user has logged in
+            session["user_id"] = rows[0]["id"]
+
+            # Redirect user to home page
+            study_table = db.execute("""SELECT name FROM sqlite_master WHERE type = ? AND name = ?""", "table", "study")
+            others_table = db.execute("""SELECT name FROM sqlite_master WHERE type = ? AND name = ?""", "table", "others")
+            deadlines_table = db.execute("""SELECT name FROM sqlite_master WHERE type = ? AND name = ?""", "table", "deadlines")
+            if (study_table != [] or deadlines_table != []) and (others_table != [] or deadlines_table != []):
+                todays_tasks = db.execute("""SELECT * FROM study WHERE date = date() AND user_id = ? UNION ALL SELECT * FROM others WHERE date = date() AND user_id = ?""", session.get("user_id"), session.get("user_id"))
+                deadlines = db.execute("""SELECT * FROM deadlines WHERE user_id = ? AND date BETWEEN DATE(date(), '-0 days') AND DATE(date(), '+10 days')""", session.get("user_id"))
+                return render_template("index.html", todays_tasks=todays_tasks, deadlines=deadlines )
+            else:
+                return apology("No database found", 403)
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -150,6 +152,9 @@ def study():
         if 'Add_button' in request.form:
             task = request.form.get("task")
             date = request.form.get("date")
+            date2 = datetime.datetime.strptime(date, "%Y-%m-%d")
+            if date2 < datetime.datetime.strptime((datetime.datetime.today().strftime("%Y-%m-%d")), "%Y-%m-%d"):
+                return apology("Select valid date", 400)
             if len(task) != 0  and date:
                 db.execute("INSERT INTO study (user_id, task, date) VALUES(?, ?, ?)", session.get("user_id"), task, date)
                 flash("Added!")
@@ -202,6 +207,9 @@ def deadlines():
         if 'Add_button' in request.form:
             task = request.form.get("deadline")
             date = request.form.get("date")
+            date2 = datetime.datetime.strptime(date, "%Y-%m-%d")
+            if date2 < datetime.datetime.strptime((datetime.datetime.today().strftime("%Y-%m-%d")), "%Y-%m-%d"):
+                return apology("Select valid date", 400)
             if len(task) != 0  and date:
                 db.execute("INSERT INTO deadlines (user_id, task, date) VALUES(?, ?, ?)", session.get("user_id"), task, date)
                 flash("Added!")
@@ -216,7 +224,6 @@ def deadlines():
         """Show portfolio of deadlines"""
         deadlines_table = db.execute("""SELECT name FROM sqlite_master WHERE type = ? AND name = ?""", "table", "deadlines")
         if (deadlines_table != []):
-            db.execute("DELETE FROM deadlines WHERE date < date() AND user_id = ?", session.get("user_id"))
             deadlines = db.execute("""SELECT * FROM deadlines WHERE user_id = ? ORDER BY date""", session.get("user_id"))
         else:
             return apology("No database Found", 400)
@@ -229,12 +236,15 @@ def others():
         if 'Add_button' in request.form:
             task = request.form.get("task")
             date = request.form.get("date")
+            date2 = datetime.datetime.strptime(date, "%Y-%m-%d")
+            if date2 < datetime.datetime.strptime((datetime.datetime.today().strftime("%Y-%m-%d")), "%Y-%m-%d"):
+                return apology("Select valid date", 400)
             if len(task) != 0  and date:
                 db.execute("INSERT INTO others (user_id, task, date) VALUES(?, ?, ?)", session.get("user_id"), task, date)
                 flash("Added!")
                 tasks = db.execute("""SELECT * FROM others WHERE user_id = ? ORDER BY date""", session.get("user_id"))
             else:
-                return apology("Wrong Input, Click on the Others link to go back to the deadlines page", 400)
+                return apology("Wrong Input, Click on the Others link to go back to the others page", 400)
         else:
             db.execute("""DELETE FROM others WHERE task = ? AND date = ? AND user_id = ?""", request.form.get("task"), request.form.get("date"), session.get("user_id"))
             flash("Deleted!")
@@ -243,7 +253,6 @@ def others():
         """Show portfolio of miscellaneous tasks"""
         others_table = db.execute("""SELECT name FROM sqlite_master WHERE type = ? AND name = ?""", "table", "others")
         if (others_table != []):
-            db.execute("DELETE FROM others WHERE date < date() AND user_id = ?", session.get("user_id"))
             tasks = db.execute("""SELECT * FROM others WHERE user_id = ? ORDER BY date""", session.get("user_id"))
         else:
             return apology("No database Found", 400)
@@ -253,15 +262,16 @@ def others():
 @login_required
 def pending():
     if request.method == "POST":
-
-            db.execute("""DELETE FROM study WHERE task = ? AND date = ? AND user_id = ?""", request.form.get("task"), request.form.get("date"), session.get("user_id"))
-            flash("Deleted!")
-            tasks = db.execute("""SELECT * FROM study WHERE user_id = ? ORDER BY date""", session.get("user_id"))
+        db.execute("""DELETE FROM study WHERE task = ? AND date = ? AND user_id = ?""", request.form.get("task"), request.form.get("date"), session.get("user_id"))
+        db.execute("""DELETE FROM others WHERE task = ? AND date = ? AND user_id = ?""", request.form.get("task"), request.form.get("date"), session.get("user_id"))
+        flash("Deleted!")
+        tasks = db.execute("""SELECT * FROM study WHERE user_id = ? AND date < date() ORDER BY date UNION ALL SELECT * FROM others WHERE user_id = ? AND date < date() ORDER BY date""", session.get("user_id"), session.get("user_id"))
     else:
         """Show portfolio of pending tasks"""
-        pending_table = db.execute("""SELECT name FROM sqlite_master WHERE type = ? AND name = ?""", "table", "study")
-        if (pending_table != []):
-            tasks = db.execute("""SELECT * FROM study WHERE user_id = ? AND date < date()""", session.get("user_id"))
+        study_table = db.execute("""SELECT name FROM sqlite_master WHERE type = ? AND name = ?""", "table", "study")
+        others_table = db.execute("""SELECT name FROM sqlite_master WHERE type = ? AND name = ?""", "table", "others")
+        if (study_table != [] or others_table != []):
+            tasks = db.execute("""SELECT * FROM study WHERE user_id = ? AND date < date() ORDER BY date UNION ALL SELECT * FROM others WHERE user_id = ? AND date < date() ORDER BY date""", session.get("user_id"), session.get("user_id"))
         else:
             return apology("No database Found", 400)
     return render_template("pending.html", tasks=tasks)
