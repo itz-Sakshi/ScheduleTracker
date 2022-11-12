@@ -265,13 +265,13 @@ def pending():
         db.execute("""DELETE FROM study WHERE task = ? AND date = ? AND user_id = ?""", request.form.get("task"), request.form.get("date"), session.get("user_id"))
         db.execute("""DELETE FROM others WHERE task = ? AND date = ? AND user_id = ?""", request.form.get("task"), request.form.get("date"), session.get("user_id"))
         flash("Deleted!")
-        tasks = db.execute("""SELECT * FROM study WHERE user_id = ? AND date < date() ORDER BY date UNION ALL SELECT * FROM others WHERE user_id = ? AND date < date() ORDER BY date""", session.get("user_id"), session.get("user_id"))
+        tasks = db.execute("""SELECT * FROM study WHERE user_id = ? AND date < date() UNION ALL SELECT * FROM others WHERE user_id = ? AND date < date() ORDER BY date""", session.get("user_id"), session.get("user_id"))
     else:
         """Show portfolio of pending tasks"""
         study_table = db.execute("""SELECT name FROM sqlite_master WHERE type = ? AND name = ?""", "table", "study")
         others_table = db.execute("""SELECT name FROM sqlite_master WHERE type = ? AND name = ?""", "table", "others")
         if (study_table != [] or others_table != []):
-            tasks = db.execute("""SELECT * FROM study WHERE user_id = ? AND date < date() ORDER BY date UNION ALL SELECT * FROM others WHERE user_id = ? AND date < date() ORDER BY date""", session.get("user_id"), session.get("user_id"))
+            tasks = db.execute("""SELECT * FROM study WHERE user_id = ? AND date < date() UNION ALL SELECT * FROM others WHERE user_id = ? AND date < date() ORDER BY date""", session.get("user_id"), session.get("user_id"))
         else:
             return apology("No database Found", 400)
     return render_template("pending.html", tasks=tasks)
