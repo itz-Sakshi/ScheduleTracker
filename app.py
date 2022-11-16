@@ -51,9 +51,10 @@ def index():
             else:
                 db.execute("""DELETE FROM deadlines WHERE task = ? AND date = ? AND user_id = ?""", request.form.get("deadline"), request.form.get("date"), session.get("user_id"))
                 flash("Deleted!")
+        user_id = session.get("user_id")
         todays_tasks = db.execute("""SELECT * FROM study WHERE date = date() AND user_id = ? UNION ALL SELECT * FROM others WHERE date = date() AND user_id = ?""", session.get("user_id"), session.get("user_id"))
         deadlines = db.execute("""SELECT * FROM deadlines WHERE user_id = ? AND date BETWEEN DATE(date(), '-0 days') AND DATE(date(), '+10 days')""", session.get("user_id"))
-        return render_template("index.html", todays_tasks=todays_tasks, deadlines=deadlines )
+        return render_template("index.html", todays_tasks=todays_tasks, deadlines=deadlines, user_id=user_id)
             
     else:
         return apology("No database found", 403)
@@ -138,7 +139,7 @@ def register():
         db.execute("INSERT INTO users (username, hash) VALUES(?, ?)", request.form.get(
             "username"), generate_password_hash(request.form.get("password")))
         flash("Registered!")
-        return render_template("index.html")
+        return render_template("login.html")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
