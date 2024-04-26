@@ -1,4 +1,6 @@
-
+*{
+   background-color: lightgoldenrodyellow; 
+}
 #nav-brand
 {
     font-size: 300%;
@@ -11,9 +13,7 @@
     margin-top: 0%;
     margin-bottom: 0%;
     margin-left: 0%;
-    margin-left: 0%;
     border-radius: 0%;
-    border-left: 0mm;
     border-left: 0mm;
 }
 #navbar
@@ -27,9 +27,7 @@
     margin-top: 0%;
     margin-bottom: 0%;
     margin-left: 0%;
-    margin-left: 0%;
     border-radius: 0%;
-    border-left: 0mm;
     border-left: 0mm;
     line-height: 2.5;
     text-decoration: none;
@@ -45,9 +43,7 @@
     margin-top: 0%;
     margin-bottom: 0%;
     margin-left: 0%;
-    margin-left: 0%;
     border-radius: 0%;
-    border-left: 0mm;
     border-left: 0mm;
     line-height: 2;
     text-decoration: none;
